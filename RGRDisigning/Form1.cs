@@ -1,12 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RGRDisigning
@@ -33,7 +28,7 @@ namespace RGRDisigning
             string url = "https://ru.wikipedia.org/wiki/Сисигамбис"; // Замените на нужный URL
             string words = txtWords.Text;
             List<string> wordList = words.Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-          
+
             pagesVisited = 0; // Сброс счетчика посещенных страниц
             List<string> foundWordsAndLinks = CrawlWebPage(url, wordList, 2); // Начальная страница и глубина обхода
 
@@ -72,8 +67,14 @@ namespace RGRDisigning
             // Сортировка результатов по количеству встреченных слов
             var sortedResults = results
                 .OrderByDescending(result => result.WordCounts.Values.Sum())
-                .Select(result => $"{"<<-- "+result.Url+" -->>"} - {string.Join(", ", result.WordCounts.Select(kv => $"Найдено совпадений: {kv.Key}: {kv.Value} "))}\n")
+                .Select(result => $"{"<<-- " + result.Url + " -->>"} - {string.Join(", ", result.WordCounts.Select(kv => $"Найдено совпадений: {kv.Key}: {kv.Value} "))}\n")
                 .ToList();
+
+            if (!sortedResults.Any())
+            {
+                sortedResults.Add("Ничего не найдено.");
+            }
+
             Cursor = Cursors.Default;
             txtResults.Text = null;
             return sortedResults;
